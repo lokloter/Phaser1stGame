@@ -70,9 +70,9 @@ function create() {
       key: "right",
       frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
       frameRate: 10,
-      repeat: -1,
+        repeat: -1,
     });
-    
+    this.physics.add.collider(player, platforms);
 }
 
 function update() {}
