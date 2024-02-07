@@ -2,6 +2,14 @@ var config = {
   type: Phaser.AUTO, //встанвлює контекст візуалізації, який ми хочемо використовувати для своєї гри
   width: 800, //встановлює розмір
   height: 600,
+  physics: {
+    //включає підтримку фізики
+    default: "arcade",
+    arcade: {
+      gravity: { y: 300 },
+      debug: false,
+    },
+  },
   scene: {
     preload: preload,
     create: create,
@@ -21,18 +29,50 @@ function preload() {
     frameWidth: 32,
     frameHeight: 48,
   });
+    this.anims.create({   //створює анімацію
+      key: "left",
+      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
 }
 
 function create() {
   this.add.image(400, 300, "sky"); //відображає ресурси гри в саму гру
 
-  платформи = this.physics.add.staticGroup();
+  platforms = this.physics.add.staticGroup(); //Це створює нову групу статичної фізики
 
   platforms.create(400, 568, "ground").setScale(2).refreshBody();
 
   platforms.create(600, 400, "ground");
   platforms.create(50, 250, "ground");
-  platforms.create(750, 220, "ground");
+    platforms.create(750, 220, "ground");   //створює спрайт
+    player = this.physics.add.sprite(100, 450, "dude");
+
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(true);
+
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "turn",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20,
+    });
+
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    
 }
 
 function update() {}
