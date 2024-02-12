@@ -18,6 +18,10 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+var platforms;
+var player;
+var score = 0;
+var scoreText;
 
 function preload() {
   //завантажує ресурси для гри
@@ -29,17 +33,10 @@ function preload() {
     frameWidth: 32,
     frameHeight: 48,
   });
-  this.anims.create({
-    //створює анімацію
-    key: "left",
-    frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
-    frameRate: 10,
-    repeat: -1,
-  });
 }
 
 function create() {
-  this.add.image(400, 300, "sky"); //відображає ресурси гри в саму гру
+  this.add.image(400, 300, "sky"); //додає фон
 
   platforms = this.physics.add.staticGroup(); //Це створює нову групу статичної фізики
 
@@ -47,8 +44,9 @@ function create() {
 
   platforms.create(600, 400, "ground");
   platforms.create(50, 250, "ground");
-  platforms.create(750, 220, "ground"); //створює спрайт
-  player = this.physics.add.sprite(100, 450, "dude");
+  platforms.create(750, 220, "ground");
+
+  player = this.physics.add.sprite(100, 450, "dude"); //додає нашого гравця
 
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
@@ -72,8 +70,8 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
-
   this.physics.add.collider(player, platforms); //робить так щоб  платформа була не прозора
+  cursors = this.input.keyboard.createCursorKeys();
   stars = this.physics.add.group({
     key: "star",
     repeat: 11,
@@ -88,35 +86,10 @@ function create() {
   function collectStar(player, star) {
     star.disableBody(true, true);
   }
-  var score = 0;
-  var scoreText;
   scoreText = this.add.text(16, 16, "score: 0", {
     fontSize: "32px",
     fill: "#000",
   });
-  function collectStar(player, star) {
-    star.disableBody(true, true);
-
-    score += 10;
-    scoreText.setText("Score: " + score);
-  }
-  S;
-  cursors = this.input.keyboard.createCursorKeys();
-  bombs = this.physics.add.group();
-
-  this.physics.add.collider(bombs, platforms);
-
-  this.physics.add.collider(player, bombs, hitBomb, null, this);
-
-  function hitBomb(player, bomb) {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play("turn");
-
-    gameOver = true;
-  }
   function collectStar(player, star) {
     star.disableBody(true, true);
 
@@ -139,8 +112,21 @@ function create() {
       bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
   }
-}
+  bombs = this.physics.add.group();
 
+  this.physics.add.collider(bombs, platforms);
+
+  this.physics.add.collider(player, bombs, hitBomb, null, this);
+  function hitBomb(player, bomb) {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play("turn");
+
+    gameOver = true;
+  }
+} //додає спрайти, фізику безпосередньо в гру
 function update() {
   if (cursors.left.isDown) {
     player.setVelocityX(-160);
