@@ -83,6 +83,12 @@ function create() {
   stars.children.iterate(function (child) {
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
   });
+  this.physics.add.collider(stars, platforms);
+  this.physics.add.overlap(player, stars, collectStar, null, this);
+  function collectStar(player, star) {
+    star.disableBody(true, true);
+  }
+
   S;
   cursors = this.input.keyboard.createCursorKeys();
 }
